@@ -1,46 +1,29 @@
 package org.example;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class Main {
-    private static void moveTest() {
+
+    private static void bounceMoveTest() throws IOException {
         Table t = new Table(10);
         t.printTable();
-        Player p = new Player("p1");
-        System.out.println(p.location);
-        while (p.location!=99) {
-            p.rollDice(t);
-            System.out.println(p.location);
+        int location = 1;
+        int dice = -1;
+        while (dice!=0) {
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(System.in));
+
+            dice = Integer.parseInt(reader.readLine());
+            location = t.moveCal(location, dice);
+            System.out.println(location);
         }
     }
 
-    private static void randomNumbersTest() {
-        Table t = new Table(10);
-        for(int i=0; i<10; i++)
-            System.out.println(Arrays.toString(t.uniqueRandomNumbers(10)));
-    }
-
-    private static void snakesLaddersTest() {
-        Table t = new Table(10);
-        t.randomSnakesLadders();
-        t.printTable();
-    }
-
     public static void main(String[] args) throws IOException {
-//        randomNumbersTest();
-//        snakesLaddersTest();
-        moveTest();
-
-
-//        while (dice!=0) {
-//            BufferedReader reader = new BufferedReader(
-//                    new InputStreamReader(System.in));
-//
-//            dice = Integer.parseInt(reader.readLine());
-//            location = t.move(location, dice);
-//            System.out.println(location);
-//        }
+        new GameState().run();
     }
 }
