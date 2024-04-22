@@ -9,31 +9,53 @@ interface GameStateI {
 }
 
 public class GameState implements GameStateI {
+
+    Table table;
+    Player[] players;
+    int n,p;
+
+    BufferedReader reader = new BufferedReader(
+            new InputStreamReader(System.in));
+
     @Override
     public void run() throws IOException {
+        init();
+        gameRun();
+    }
+
+    private void init() throws IOException {
+
         System.out.println("Initializing game...");
 
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(System.in));
         System.out.print("Enter size of table : ");
-        int n = Integer.parseInt(reader.readLine());
+        n = Integer.parseInt(reader.readLine());
         System.out.print("Enter number of players : ");
-        int p = Integer.parseInt(reader.readLine());
-        Table table = new Table(n);
-        Player[] players = new Player[p];
+        p = Integer.parseInt(reader.readLine());
+
+        table = new Table(n);
+        players = new Player[p];
+
         for (int i=0; i<p; i++) {
             players[i] = new Player("Player"+(i+1));
         }
+    }
 
+    private void gameRun() throws IOException {
         System.out.println("Running game...");
 
         int turn = 0;
 
-        table.printTable();
         String read = "";
 
         while(true) {
-            System.out.println(players[turn%p].getName()+"'s turn");
+            table.printTable();
+
+            for (Player player:players) {
+                player.printLocation();
+            }
+
+            System.out.println("\n"+players[turn%p].getName()+"'s turn");
+            System.out.println("press Enter to roll a dice");
             if(!read.equals("skip")) read=reader.readLine();
             players[turn%p].rollDice(table);
             if(players[turn%p].getLocation() == n*n) break;

@@ -15,6 +15,8 @@ public class Table implements TableI {
     private final int n;
     private final Square[] table;
 
+    Random r = new Random();
+
     public Table(int n) {
         this.n = n;
         table = new Blank[n*n];
@@ -70,7 +72,7 @@ public class Table implements TableI {
     private void randomSnakesLadders() {
         int[] startPoints = uniqueRandomNumbers((n*n+9)/10);
 //        int[] startPoints = make6snakes();
-        Random r = new Random();
+
         int snakeCount;
         do {
             for (int startPoint : startPoints) {
@@ -111,8 +113,6 @@ public class Table implements TableI {
         for (i = 0; i < k; i++) {
             reservoir[i] = i+2;
         }
-
-        Random r = new Random();
 
         // Iterate from the (k+1)th element to nth element
         for (; i < n*n-2; i++) {

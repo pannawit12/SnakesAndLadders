@@ -14,7 +14,6 @@ public class Player {
         int dice = random.nextInt(6)+1;
         location = t.moveCal(location, dice);
         System.out.println(name+" rolled a "+dice);
-        t.printTable();
         System.out.println(name+" moved to square "+location);
     }
 
@@ -24,5 +23,9 @@ public class Player {
 
     public int getLocation(){
         return location;
+    }
+
+    public void printLocation() {
+        System.out.println(name+" is at "+location);
     }
 }
