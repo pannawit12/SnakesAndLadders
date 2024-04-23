@@ -24,16 +24,16 @@ public class GameState {
 
         System.out.println("Initializing game...");
 
-        System.out.print("Enter size of table : ");
+        System.out.print("Enter size of table : "); //todo: เปลี่ยน size เป็น length
         int length = Integer.parseInt(reader.readLine());
 
         System.out.print("Enter number of players : ");
         numbersOfPlayers = Integer.parseInt(reader.readLine());
 
-        table = new Table(length, diceFaces);
+        table = new Table(length, diceFaces); //todo: แยกสุ่มงูบันไดจาก Table
         players = new Player[numbersOfPlayers];
 
-        for (int playerIndex = 0; playerIndex< numbersOfPlayers; playerIndex++) {
+        for (int playerIndex = 0; playerIndex< numbersOfPlayers; playerIndex++) { //todo: ลืม space bar หน้า <
             players[playerIndex] = new Player("Player" + (playerIndex + 1));
         }
     }
@@ -51,7 +51,7 @@ public class GameState {
             for (Player player:players) {
                 System.out.println(player.getName() + " is at " + player.getLocation());
             }
-
+//todo: เว้นบรรทัดเกิน
 
             Player player = players[turn % numbersOfPlayers];
 
@@ -69,15 +69,15 @@ public class GameState {
 
     private void turnRun(Player player) throws IOException {
         String name = player.getName();
-        int dice = player.rollDice(diceFaces);
+        int dice = player.rollDice(diceFaces); //todo: แก้จาก diceFaces เป็น Dice แก้จาก dice เป็นผลลูกเต๋า
         int moveLocation = table.moveCal(player.getLocation(), dice);
         player.setLocation(moveLocation);
 
         System.out.println("\n" + name + "'s turn");
         System.out.print("press Enter to roll a dice");
+//todo: เว้นบรรทัดเกิน
 
-
-        if(!read.equals("skip")) {
+        if(!read.equals("skip")) { //todo: ย้ายไปไฟล์ test
             read = reader.readLine();
         }
 

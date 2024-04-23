@@ -5,11 +5,11 @@ import java.util.Random;
 public class Player {
     private final String name;
     private int location = 1;
-    Random random = new Random();
+    Random random = new Random(); //todo: เปลี่ยนเป็น private ลองย้ายไปใน rollDice
 
     public Player (String name) {
         this.name = name;
-    }
+    } //todo: ลบ space bar
     public int rollDice(int diceFaces) {
         return random.nextInt(diceFaces) + 1;
     }

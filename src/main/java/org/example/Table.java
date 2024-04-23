@@ -5,7 +5,7 @@ import java.util.*;
 interface TableInterface {
     int getFinishSquareIndex();
     StringBuilder getTableToString();
-    int moveCal(int prevLoc, int dice);
+    int moveCal(int prevLoc, int dice); //todo: อย่าย่อคำ เปลี่ยน dice
 }
 
 public class Table implements TableInterface {
@@ -14,7 +14,7 @@ public class Table implements TableInterface {
     private final Square[] table;
     private final int finishSquareIndex;
 
-    public Table(int length, int diceFaces) {
+    public Table(int length, int diceFaces) { //todo: แก้ชื่อ diceFaces
         this.length = length;
         finishSquareIndex = length * length;
         table = new Square[finishSquareIndex];
@@ -33,9 +33,9 @@ public class Table implements TableInterface {
 
     private int getRow(int squareIndex) {
         return (squareIndex - 1)/ length;
-    }
+    } //todo: ลืม space bar หน้า /
 
-    private int getSquareIndex(int row, int col) {
+    private int getSquareIndex(int row, int col) { //todo: เปลี่ยน col เป็น column
         return row * length + (row % 2 == 0 ? col : length - 1 - col) + 1;
     }
 
@@ -54,7 +54,7 @@ public class Table implements TableInterface {
             tableString.append("| ");
 
             for (int col = 0; col < length; col++) {
-                int SquareIndex = getSquareIndex(row, col);
+                int SquareIndex = getSquareIndex(row, col); //todo: เปลี่ยนเป็น s เล็ก
                 String formattedSquareIndex = String.format("%" + (- squareIndexLength) + "d", SquareIndex);
                 tableString.append(formattedSquareIndex);
 
@@ -77,7 +77,7 @@ public class Table implements TableInterface {
 
     @Override
     public int moveCal(int prevLoc, int dice) {
-        int location = prevLoc + dice;
+        int location = prevLoc + dice; //todo: เปลี่ยน prevLoc ให้ไม่ย่อ
         Collection<Integer> passedSquareIndexes = new HashSet<>();
 
         while (location > finishSquareIndex || location < 1) {
@@ -99,7 +99,7 @@ public class Table implements TableInterface {
     Random random = new Random();
 
     private void randomSnakesLadders(int diceFaces) {
-        int tenPerCentOfSquaresRoundedUp = (finishSquareIndex + 9) / 10;
+        int tenPerCentOfSquaresRoundedUp = (finishSquareIndex + 9) / 10; //todo: เปลี่ยนชื่อเป็น numberOfSnakesLadders
         int[] heads = uniqueRandomHead(tenPerCentOfSquaresRoundedUp);
         int snakeCount;
 
