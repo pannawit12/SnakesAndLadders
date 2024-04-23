@@ -11,8 +11,7 @@ public class Player {
         this.name = name;
     }
     public int rollDice(int diceFaces) {
-        int dice = random.nextInt(diceFaces) + 1;
-        return dice;
+        return random.nextInt(diceFaces) + 1;
     }
 
     public String getName(){

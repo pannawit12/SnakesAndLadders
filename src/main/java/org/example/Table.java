@@ -3,11 +3,8 @@ package org.example;
 import java.util.*;
 
 interface TableInterface {
-    int getLength();
     int getFinishSquareIndex();
-    int getRow(int squareIndex);
-    int getSquareIndex(int row, int col);
-    void printTable(int diceFaces);
+    StringBuilder getTableToString();
     int moveCal(int prevLoc, int dice);
 }
 
@@ -30,83 +27,94 @@ public class Table implements TableInterface {
     }
 
     @Override
-    public int getLength() {
-        return length;
-    }
-
-    @Override
     public int getFinishSquareIndex() {
         return finishSquareIndex;
     }
 
-    @Override
-    public int getRow(int squareIndex) {
+    private int getRow(int squareIndex) {
         return (squareIndex - 1)/ length;
     }
 
-    @Override
-    public int getSquareIndex(int row, int col) {
+    private int getSquareIndex(int row, int col) {
         return row * length + (row % 2 == 0 ? col : length - 1 - col) + 1;
     }
 
     @Override
-    public void printTable(int diceFaces) {
+    public StringBuilder getTableToString() {
+        StringBuilder tableString = new StringBuilder();
+
         int maxSquareIndexLength = (int)Math.log10(finishSquareIndex) + 1;
+        int spacesAfterIndex = 1;
+        int squareIndexLength = maxSquareIndexLength + spacesAfterIndex;
+
+        int stringInSquareNameLength = 2;
+        int squareNameLength = maxSquareIndexLength + stringInSquareNameLength;
 
         for (int row = length - 1; row >= 0; row--) {
-            System.out.print("| ");
+            tableString.append("| ");
 
             for (int col = 0; col < length; col++) {
                 int SquareIndex = getSquareIndex(row, col);
-                System.out.printf("%" + (- maxSquareIndexLength - 1) + "d", SquareIndex);
-                int len = maxSquareIndexLength + 2;
+                String formattedSquareIndex = String.format("%" + (- squareIndexLength) + "d", SquareIndex);
+                tableString.append(formattedSquareIndex);
+
                 String squareName = table[SquareIndex - 1].getName();
-                System.out.printf("%" + len + "s", squareName);
-//                "%" + len + "s", "S-"+super.getNum());
-                System.out.print(" | ");
+                String formattedSquareName = String.format("%" + squareNameLength + "s", squareName);
+                tableString.append(formattedSquareName);
+
+                tableString.append(" | ");
             }
 
-            System.out.println();
+            tableString.append("\n");
         }
 
-        System.out.println("-".repeat(length * (diceFaces + 2 * maxSquareIndexLength) + 1));
+        int marginSquare = 2;
+        int squareLength = squareIndexLength + spacesAfterIndex + squareNameLength + marginSquare;
+        int tableLength = length * squareLength + 1;
+        tableString.append("-".repeat(tableLength));
+        return tableString;
     }
 
     @Override
     public int moveCal(int prevLoc, int dice) {
-        int loc = prevLoc + dice;
+        int location = prevLoc + dice;
         Collection<Integer> passedSquareIndexes = new HashSet<>();
 
-        if (loc > finishSquareIndex) {
-            loc = (finishSquareIndex << 1) - loc;
+        while (location > finishSquareIndex || location < 1) {
+            if (location > finishSquareIndex) {
+                location = (finishSquareIndex << 1) - location;
+            } else {
+                location = 2 - location;
+            }
         }
 
-        while (table[loc - 1].getNum() != 0 && !passedSquareIndexes.contains(loc)) {
-            passedSquareIndexes.add(loc);
-            loc = table[loc - 1].getNum();
+        while (table[location - 1].getNum() != 0 && !passedSquareIndexes.contains(location)) {
+            passedSquareIndexes.add(location);
+            location = table[location - 1].getNum();
         }
 
-        return loc;
+        return location;
     }
 
     Random random = new Random();
 
     private void randomSnakesLadders(int diceFaces) {
-        int[] heads = uniqueRandomHead((finishSquareIndex + 9) / 10);
+        int tenPerCentOfSquaresRoundedUp = (finishSquareIndex + 9) / 10;
+        int[] heads = uniqueRandomHead(tenPerCentOfSquaresRoundedUp);
         int snakeCount;
 
         do {
             for (int head : heads) {
                 int tail = random.nextInt(length * length) + 1;
-                int startRow = getRow(head);
-                int endRow = getRow(tail);
+                int headRow = getRow(head);
+                int tailRow = getRow(tail);
 
-                while (startRow == endRow) {
+                while (headRow == tailRow) {
                     tail = random.nextInt(length * length) + 1;
-                    endRow = getRow(tail);
+                    tailRow = getRow(tail);
                 }
 
-                if (startRow > endRow) {
+                if (headRow > tailRow) {
                     table[head - 1] = new Snake(tail);
                 } else {
                     table[head - 1] = new Ladder(tail);
@@ -116,7 +124,7 @@ public class Table implements TableInterface {
             snakeCount = 0;
 
             for (int i = 2; i < length * length && snakeCount != diceFaces; i++) {
-                if (moveCal(i, 0)<i) {
+                if (moveCal(i, 0) < i) {
                     snakeCount++;
                 } else {
                     snakeCount = 0;
