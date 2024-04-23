@@ -1,19 +1,19 @@
 package org.example;
 
 public class Snake implements Square {
-    int num;
+    int number;
 
-    public Snake(int num) {
-        this.num = num;
+    public Snake(int number) {
+        this.number = number;
     }
 
     @Override
-    public int getNum() {
-        return num;
+    public int getNumber() {
+        return number;
     }
 
     @Override
     public String getName() {
-        return "S-"+getNum();
+        return "S-"+ getNumber();
     }
 }

@@ -1,19 +1,19 @@
 package org.example;
 
 public class Ladder implements Square {
-    int num;
+    int number;
 
-    public Ladder(int num) {
-        this.num = num;
+    public Ladder(int number) {
+        this.number = number;
     }
 
     @Override
-    public int getNum() {
-        return num;
+    public int getNumber() {
+        return number;
     }
 
     @Override
     public String getName() {
-        return "L-"+getNum();
+        return "L-"+ getNumber();
     }
 }

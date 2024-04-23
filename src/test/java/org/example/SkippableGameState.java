@@ -1,25 +1,17 @@
 package org.example;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
-public class GameState {
-    Table table;
-    Player[] players;
-    int numbersOfPlayers;
-    int numberOfDiceFaces = 6;
-
-    BufferedReader reader = new BufferedReader(
-            new InputStreamReader(System.in));
+public class SkippableGameState extends GameState {
 
     public static void main(String[] args) throws IOException {
-        GameState game = new GameState();
+        SkippableGameState game = new SkippableGameState();
         game.initial();
         game.gameRun();
     }
 
     private void initial() throws IOException {
+
         System.out.println("Initializing game...");
 
         System.out.print("Enter length of table : ");
@@ -49,6 +41,7 @@ public class GameState {
             }
 
             Player player = players[turn % numbersOfPlayers];
+
             turnRun(player);
 
             if(player.getLocation() == table.getFinishSquareIndex()) {
@@ -61,6 +54,8 @@ public class GameState {
         System.out.println(players[turn % numbersOfPlayers].getName() + " Win!!!");
     }
 
+    String read = "";
+
     private void turnRun(Player player) throws IOException {
         String name = player.getName();
         int dice = player.rollDice(numberOfDiceFaces); //todo: แก้จาก diceFaces เป็น Dice แก้จาก dice เป็นผลลูกเต๋า
@@ -69,7 +64,11 @@ public class GameState {
 
         System.out.println("\n" + name + "'s turn");
         System.out.print("press Enter to roll a dice");
-        reader.readLine();
+
+        if (!read.equals("skip")){
+            read = reader.readLine();
+        }
+
         System.out.println(name + " rolled a " + dice);
         System.out.println(name + " moved to square " + moveLocation);
     }

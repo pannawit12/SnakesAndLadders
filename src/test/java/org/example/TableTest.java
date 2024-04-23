@@ -29,7 +29,7 @@ class TableTest {
     @Test
     public void moveTest() {
         Table t = new Table(10, 6);
-        t.printTable(6);
+//        t.printTable(6);
         Player p = new Player("p1");
         System.out.println(p.getLocation());
         while (p.getLocation()!=100) {

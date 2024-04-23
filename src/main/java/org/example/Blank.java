@@ -2,7 +2,7 @@ package org.example;
 
 public class Blank implements Square { //todo: เปลี่ยนชื่อ Blank อาจจะตัดออก
     @Override
-    public int getNum() {
+    public int getNumber() {
         return 0;
     }
 
