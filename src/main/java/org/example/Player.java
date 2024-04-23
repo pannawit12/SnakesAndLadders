@@ -10,11 +10,9 @@ public class Player {
     public Player (String name) {
         this.name = name;
     }
-    public void rollDice(Table t) {
-        int dice = random.nextInt(6)+1;
-        location = t.moveCal(location, dice);
-        System.out.println(name+" rolled a "+dice);
-        System.out.println(name+" moved to square "+location);
+    public int rollDice(int diceFaces) {
+        int dice = random.nextInt(diceFaces) + 1;
+        return dice;
     }
 
     public String getName(){
@@ -25,7 +23,7 @@ public class Player {
         return location;
     }
 
-    public void printLocation() {
-        System.out.println(name+" is at "+location);
+    public void setLocation(int location) {
+        this.location = location;
     }
 }

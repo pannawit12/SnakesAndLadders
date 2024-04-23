@@ -28,12 +28,12 @@ class TableTest {
 
     @Test
     public void moveTest() {
-        Table t = new Table(10);
-        t.printTable();
+        Table t = new Table(10, 6);
+        t.printTable(6);
         Player p = new Player("p1");
         System.out.println(p.getLocation());
         while (p.getLocation()!=100) {
-            p.rollDice(t);
+            p.rollDice(6);
             System.out.println(p.getLocation());
         }
     }

@@ -4,39 +4,37 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-interface GameStateI {
-    void run() throws IOException;
-}
-
-public class GameState implements GameStateI {
+public class GameState {
 
     Table table;
     Player[] players;
-    int n,p;
+    int numbersOfPlayers;
+    int diceFaces = 6;
 
     BufferedReader reader = new BufferedReader(
             new InputStreamReader(System.in));
 
-    @Override
-    public void run() throws IOException {
-        init();
-        gameRun();
+    public static void main(String[] args) throws IOException {
+        GameState game = new GameState();
+        game.initial();
+        game.gameRun();
     }
 
-    private void init() throws IOException {
+    private void initial() throws IOException {
 
         System.out.println("Initializing game...");
 
         System.out.print("Enter size of table : ");
-        n = Integer.parseInt(reader.readLine());
+        int length = Integer.parseInt(reader.readLine());
+
         System.out.print("Enter number of players : ");
-        p = Integer.parseInt(reader.readLine());
+        numbersOfPlayers = Integer.parseInt(reader.readLine());
 
-        table = new Table(n);
-        players = new Player[p];
+        table = new Table(length, diceFaces);
+        players = new Player[numbersOfPlayers];
 
-        for (int i=0; i<p; i++) {
-            players[i] = new Player("Player"+(i+1));
+        for (int playerIndex = 0; playerIndex< numbersOfPlayers; playerIndex++) {
+            players[playerIndex] = new Player("Player" + (playerIndex + 1));
         }
     }
 
@@ -44,25 +42,38 @@ public class GameState implements GameStateI {
         System.out.println("Running game...");
 
         int turn = 0;
-
         String read = "";
 
         while(true) {
-            table.printTable();
+            table.printTable(diceFaces);
 
             for (Player player:players) {
-                player.printLocation();
+                System.out.println(player.getName() + " is at " + player.getLocation());
             }
 
-            System.out.println("\n"+players[turn%p].getName()+"'s turn");
+            if(!read.equals("skip")) {
+                read = reader.readLine();
+            }
+
+            Player player = players[turn % numbersOfPlayers];
+            String name = player.getName();
+            int dice = player.rollDice(diceFaces);
+            int moveLocation = table.moveCal(player.getLocation(), dice);
+            player.setLocation(moveLocation);
+
+            System.out.println("\n" + name + "'s turn");
             System.out.println("press Enter to roll a dice");
-            if(!read.equals("skip")) read=reader.readLine();
-            players[turn%p].rollDice(table);
-            if(players[turn%p].getLocation() == n*n) break;
+            System.out.println(name + " rolled a " + dice);
+            System.out.println(name + " moved to square " + moveLocation);
+
+            if(players[turn % numbersOfPlayers].getLocation() == table.getFinishSquareIndex()) {
+                break;
+            }
+
             turn++;
         }
 
-        System.out.println(players[turn%p].getName()+" Win!!!");
+        System.out.println(players[turn % numbersOfPlayers].getName() + " Win!!!");
     }
 
 }

@@ -1,13 +1,19 @@
 package org.example;
 
-public class Snake extends Blank {
+public class Snake implements Square {
+    int num;
 
     public Snake(int num) {
-        super(num);
+        this.num = num;
     }
 
     @Override
-    public void print(int len) {
-        System.out.printf("%" + len + "s", "S-"+super.getNum());
+    public int getNum() {
+        return num;
+    }
+
+    @Override
+    public String getName() {
+        return "S-"+getNum();
     }
 }

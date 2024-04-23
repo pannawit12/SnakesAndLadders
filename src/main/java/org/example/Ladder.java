@@ -1,12 +1,19 @@
 package org.example;
 
-public class Ladder extends Blank {
+public class Ladder implements Square {
+    int num;
+
     public Ladder(int num) {
-        super(num);
+        this.num = num;
     }
 
     @Override
-    public void print(int len) {
-        System.out.printf("%" + len + "s", "L-"+super.getNum());
+    public int getNum() {
+        return num;
+    }
+
+    @Override
+    public String getName() {
+        return "L-"+getNum();
     }
 }

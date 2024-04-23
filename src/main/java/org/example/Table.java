@@ -2,138 +2,145 @@ package org.example;
 
 import java.util.*;
 
-interface TableI {
-    int getRow(int x);
-//    int getCol(int x);
-    int getIndex(int row, int col);
-    void printTable();
+interface TableInterface {
+    int getLength();
+    int getFinishSquareIndex();
+    int getRow(int squareIndex);
+    int getSquareIndex(int row, int col);
+    void printTable(int diceFaces);
     int moveCal(int prevLoc, int dice);
 }
 
-public class Table implements TableI {
+public class Table implements TableInterface {
 
-    private final int n;
+    private final int length;
     private final Square[] table;
+    private final int finishSquareIndex;
 
-    Random r = new Random();
+    public Table(int length, int diceFaces) {
+        this.length = length;
+        finishSquareIndex = length * length;
+        table = new Square[finishSquareIndex];
 
-    public Table(int n) {
-        this.n = n;
-        table = new Blank[n*n];
-        for (int i=0; i<n*n; i++) {
-            table[i] = new Blank();
+        for (int squareIndex = 0; squareIndex < finishSquareIndex; squareIndex++) {
+            table[squareIndex] = new Blank();
         }
-        randomSnakesLadders();
+
+        randomSnakesLadders(diceFaces);
     }
 
     @Override
-    public int getRow(int x) {
-        return (x-1)/n;
-    }
-
-//    @Override
-//    public int getCol(int x) {
-//        return ((x-1)%(n<<1)<n?x%n:n-1-(x-1)%n);
-//    }
-
-    @Override
-    public int getIndex(int row, int col) {
-        return row*n+(row%2==0?col:n-1-col)+1;
+    public int getLength() {
+        return length;
     }
 
     @Override
-    public void printTable() {
-        int len = (int)Math.log10(n*n)+1;
-        for (int i=n-1; i>=0; i--) {
+    public int getFinishSquareIndex() {
+        return finishSquareIndex;
+    }
+
+    @Override
+    public int getRow(int squareIndex) {
+        return (squareIndex - 1)/ length;
+    }
+
+    @Override
+    public int getSquareIndex(int row, int col) {
+        return row * length + (row % 2 == 0 ? col : length - 1 - col) + 1;
+    }
+
+    @Override
+    public void printTable(int diceFaces) {
+        int maxSquareIndexLength = (int)Math.log10(finishSquareIndex) + 1;
+
+        for (int row = length - 1; row >= 0; row--) {
             System.out.print("| ");
-            for (int j=0; j<n; j++) {
-                int index = getIndex(i, j);
-                System.out.printf("%" + (-len-1) + "d", index);
-                table[index-1].print(len+2);
+
+            for (int col = 0; col < length; col++) {
+                int SquareIndex = getSquareIndex(row, col);
+                System.out.printf("%" + (- maxSquareIndexLength - 1) + "d", SquareIndex);
+                int len = maxSquareIndexLength + 2;
+                String squareName = table[SquareIndex - 1].getName();
+                System.out.printf("%" + len + "s", squareName);
+//                "%" + len + "s", "S-"+super.getNum());
                 System.out.print(" | ");
             }
+
             System.out.println();
         }
-        System.out.println("-".repeat(n*(6+2*len)+1));
+
+        System.out.println("-".repeat(length * (diceFaces + 2 * maxSquareIndexLength) + 1));
     }
 
     @Override
     public int moveCal(int prevLoc, int dice) {
-        int loc = prevLoc+dice;
-        Collection<Integer> h = new HashSet<>();
-        if (loc > n*n) loc = (n*n<<1)-loc;
-        while (table[loc-1].getNum()!=0 && !h.contains(loc)) {
-            h.add(loc);
-            loc = table[loc-1].getNum();
+        int loc = prevLoc + dice;
+        Collection<Integer> passedSquareIndexes = new HashSet<>();
+
+        if (loc > finishSquareIndex) {
+            loc = (finishSquareIndex << 1) - loc;
         }
+
+        while (table[loc - 1].getNum() != 0 && !passedSquareIndexes.contains(loc)) {
+            passedSquareIndexes.add(loc);
+            loc = table[loc - 1].getNum();
+        }
+
         return loc;
     }
 
-    private void randomSnakesLadders() {
-        int[] startPoints = uniqueRandomNumbers((n*n+9)/10);
-//        int[] startPoints = make6snakes();
+    Random random = new Random();
 
+    private void randomSnakesLadders(int diceFaces) {
+        int[] heads = uniqueRandomHead((finishSquareIndex + 9) / 10);
         int snakeCount;
+
         do {
-            for (int startPoint : startPoints) {
-                int endPoint = r.nextInt(n * n) + 1;
-                int startRow = getRow(startPoint);
-                int endRow = getRow(endPoint);
+            for (int head : heads) {
+                int tail = random.nextInt(length * length) + 1;
+                int startRow = getRow(head);
+                int endRow = getRow(tail);
+
                 while (startRow == endRow) {
-                    endPoint = r.nextInt(n * n) + 1;
-                    endRow = getRow(endPoint);
+                    tail = random.nextInt(length * length) + 1;
+                    endRow = getRow(tail);
                 }
-                if (startRow > endRow)
-                    table[startPoint - 1] = new Snake(endPoint);
-                else
-                    table[startPoint - 1] = new Ladder(endPoint);
-//            System.out.println(i+": "+startPoint+" "+endPoint+" "+table[startPoint-1].getNum());
+
+                if (startRow > endRow) {
+                    table[head - 1] = new Snake(tail);
+                } else {
+                    table[head - 1] = new Ladder(tail);
+                }
             }
-//            printTable();
+
             snakeCount = 0;
-            for (int i = 2; i < n * n && snakeCount != 6; i++) {
-//                System.out.println(i);
-//                System.out.println(moveCal(i, 0));
+
+            for (int i = 2; i < length * length && snakeCount != diceFaces; i++) {
                 if (moveCal(i, 0)<i) {
                     snakeCount++;
-                }
-                else
+                } else {
                     snakeCount = 0;
-//                System.out.println(i+": "+snakeCount);
+                }
             }
-        } while (snakeCount>=6);
+        } while (snakeCount >= diceFaces);
     }
 
-    private int[] uniqueRandomNumbers(int k) {
-        int i; // index for elements in stream[]
+    private int[] uniqueRandomHead(int numberOfSnakesLadders) {
+        int squareIndex;
+        int[] heads = new int[numberOfSnakesLadders];
 
-        // reservoir[] is the output array. Initialize it
-        // with first k elements from stream[]
-        int[] reservoir = new int[k];
-        for (i = 0; i < k; i++) {
-            reservoir[i] = i+2;
+        for (squareIndex = 2; squareIndex < numberOfSnakesLadders + 2; squareIndex++) {
+            heads[squareIndex - 2] = squareIndex;
         }
 
-        // Iterate from the (k+1)th element to nth element
-        for (; i < n*n-2; i++) {
-            // Pick a random index from 0 to i.
-            int j = r.nextInt(i);
+        for (; squareIndex < finishSquareIndex ; squareIndex++) {
+            int randomHeadIndex = random.nextInt(squareIndex - 2);
 
-            // If the randomly  picked index is smaller than
-            // k, then replace the element present at the
-            // index with new element from stream
-            if (j < k)
-                reservoir[j] = i+2;
+            if (randomHeadIndex < numberOfSnakesLadders) {
+                heads[randomHeadIndex] = squareIndex;
+            }
         }
 
-        return reservoir;
+        return heads;
     }
-
-//    private int[] make6snakes() {
-//        int[] arr = new int[n*n-3];
-//        for (int i=2; i<n*n-1;i++) {
-//            arr[i-2] = i;
-//        }
-//        return arr;
-//    }
 }
