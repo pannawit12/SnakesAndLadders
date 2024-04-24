@@ -21,7 +21,7 @@ public class GameState {
     public GameState() throws IOException {
         System.out.println("Initializing game...");
 
-        System.out.print("Enter length of table : "); //finish: change size to length
+        System.out.print("Enter length of table : ");
         int length = Integer.parseInt(reader.readLine());
 
         System.out.print("Enter number of players : ");
@@ -40,6 +40,7 @@ public class GameState {
         }
     }
 
+    // TODO: gameRun => run
     private void gameRun() throws IOException {
         System.out.println("Running game...");
 
@@ -56,6 +57,7 @@ public class GameState {
         System.out.println(currentPlayer.getName() + " Win!!!");
     }
 
+    // TODO: turn=>?
     private void turn(Player currentPlayer) throws IOException {
         System.out.println(table.getTableToString());
 

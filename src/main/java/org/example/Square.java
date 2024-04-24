@@ -1,6 +1,6 @@
 package org.example;
 
 public interface Square {
-    int getNumber(); //finish: change getNum to getNumber
+    int getNumber();
     String getName();
 }

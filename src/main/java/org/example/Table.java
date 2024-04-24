@@ -2,11 +2,14 @@ package org.example;
 
 import java.util.*;
 
+// TODO: enter before return
+// TODO: length * length is ?
 interface TableInterface {
     int getFinishSquareIndex();
     StringBuilder getTableToString();
     void randomSnakesLadders(int numberOfDiceFaces);
-    int moveCalculation(int previousLocation, int diceNumber); //finish: change prevLoc to previousLocation, change moveCal to moveCalculation
+    // TODO: change method name to verb
+    int moveCalculation(int previousLocation, int diceNumber);
 }
 
 public class Table implements TableInterface {
@@ -33,6 +36,7 @@ public class Table implements TableInterface {
         return row * length + (row % 2 == 0 ? column : length - 1 - column) + 1;
     }
 
+    // TODO: isSpecialSquare => ?
     private boolean isSpecialSquare(int squareIndex) {
         return table[squareIndex - 1] != null;
     }
@@ -50,6 +54,7 @@ public class Table implements TableInterface {
         for (int row = length - 1; row >= 0; row--) {
             tableString.append("| ");
 
+            // TODO: col=>column
             for (int col = 0; col < length; col++) {
                 int squareIndex = getSquareIndex(row, col);  //finish: change SquareIndex to squareIndex
                 String squareName = "";
@@ -101,8 +106,10 @@ public class Table implements TableInterface {
 
     @Override
     public void randomSnakesLadders(int numberOfDiceFaces) {
+        // TODO: numberOfSnakesLadders ควรเปลี่ยนให้บอกได้ว่าเป็นของทั้งหมด
         int numberOfSnakesLadders = (finishSquareIndex + 9) / 10;  //finish: change tenPerCentOfSquaresRoundedUp to numberOfSnakesLadders
         int[] heads = uniqueRandomHead(numberOfSnakesLadders);
+        // TODO: snakeCount=>?
         int snakeCount;
 
         do {

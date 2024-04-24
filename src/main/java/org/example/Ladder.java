@@ -1,6 +1,7 @@
 package org.example;
 
 public class Ladder implements Square {
+    //TODO: number=>tail
     private final int number;
     private static final String ladderPrefix = "L-";
 
