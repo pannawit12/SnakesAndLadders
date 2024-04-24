@@ -1,7 +1,8 @@
 package org.example;
 
 public class Snake implements Square {
-    int number;
+    private final int number;
+    private static final String snakePrefix = "S-";
 
     public Snake(int number) {
         this.number = number;
@@ -14,6 +15,10 @@ public class Snake implements Square {
 
     @Override
     public String getName() {
-        return "S-"+ getNumber();
+        return snakePrefix + getNumber();
+    }
+
+    public static int getPrefixLength() {
+        return snakePrefix.length();
     }
 }

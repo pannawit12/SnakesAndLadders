@@ -5,33 +5,37 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class GameState {
-    Table table;
-    Player[] players;
-    int numbersOfPlayers;
-    int numberOfDiceFaces = 6;
+    private final Table table;
+    private final Player[] players;
+    private final int numberOfPlayers;
+    private final Dice dice;
 
-    BufferedReader reader = new BufferedReader(
+    private final BufferedReader reader = new BufferedReader(
             new InputStreamReader(System.in));
 
     public static void main(String[] args) throws IOException {
         GameState game = new GameState();
-        game.initial();
         game.gameRun();
     }
 
-    private void initial() throws IOException {
+    public GameState() throws IOException {
         System.out.println("Initializing game...");
 
-        System.out.print("Enter length of table : ");
+        System.out.print("Enter length of table : "); //finish: change size to length
         int length = Integer.parseInt(reader.readLine());
 
         System.out.print("Enter number of players : ");
-        numbersOfPlayers = Integer.parseInt(reader.readLine());
+        numberOfPlayers = Integer.parseInt(reader.readLine());
 
-        table = new Table(length, numberOfDiceFaces); //todo: แยกสุ่มงูบันไดจาก Table
-        players = new Player[numbersOfPlayers];
+        System.out.print("Enter number of dice faces : ");
+        int numberOfDiceFaces = Integer.parseInt(reader.readLine()); //finish: change diceFaces to numberOfDiceFaces
 
-        for (int playerIndex = 0; playerIndex < numbersOfPlayers; playerIndex++) {
+        table = new Table(length); //finish: separate randomSnakesLadders from Table constructor
+        table.randomSnakesLadders(numberOfDiceFaces);
+        players = new Player[numberOfPlayers];
+        dice = new Dice(numberOfDiceFaces);
+
+        for (int playerIndex = 0; playerIndex < numberOfPlayers; playerIndex++) { //finish: add space bar before <
             players[playerIndex] = new Player("Player" + (playerIndex + 1));
         }
     }
@@ -39,38 +43,41 @@ public class GameState {
     private void gameRun() throws IOException {
         System.out.println("Running game...");
 
-        int turn = 0;
+        int turnCount = 0;
+        Player currentPlayer = players[0];
+        boolean isGameEnd = false;
 
-        while(true) {
-            System.out.println(table.getTableToString());
-
-            for (Player player:players) {
-                System.out.println(player.getName() + " is at " + player.getLocation());
-            }
-
-            Player player = players[turn % numbersOfPlayers];
-            turnRun(player);
-
-            if(player.getLocation() == table.getFinishSquareIndex()) {
-                break;
-            }
-
-            turn++;
+        while (!isGameEnd) {
+            currentPlayer = players[turnCount++ % numberOfPlayers];
+            turn(currentPlayer);
+            isGameEnd = isPlayerWin(currentPlayer);
         }
 
-        System.out.println(players[turn % numbersOfPlayers].getName() + " Win!!!");
+        System.out.println(currentPlayer.getName() + " Win!!!");
     }
 
-    private void turnRun(Player player) throws IOException {
-        String name = player.getName();
-        int dice = player.rollDice(numberOfDiceFaces); //todo: แก้จาก diceFaces เป็น Dice แก้จาก dice เป็นผลลูกเต๋า
-        int moveLocation = table.moveCal(player.getLocation(), dice);
-        player.setLocation(moveLocation);
+    private void turn(Player currentPlayer) throws IOException {
+        System.out.println(table.getTableToString());
+
+        for (Player player:players) {
+            System.out.println(player.getName() + " is at " + player.getLocation());
+        }
+
+        String name = currentPlayer.getName();
+        int diceNumber = currentPlayer.rollDice(dice); //finish: change dice to diceNumber
+        int moveLocation = table.moveCalculation(currentPlayer.getLocation(), diceNumber);
+        currentPlayer.setLocation(moveLocation);
 
         System.out.println("\n" + name + "'s turn");
         System.out.print("press Enter to roll a dice");
-        reader.readLine();
-        System.out.println(name + " rolled a " + dice);
+
+        reader.readLine(); //finished: move skip to test file
+
+        System.out.println(name + " rolled a " + diceNumber);
         System.out.println(name + " moved to square " + moveLocation);
+    }
+
+    private boolean isPlayerWin(Player player) {
+        return player.getLocation() == table.getFinishSquareIndex();
     }
 }

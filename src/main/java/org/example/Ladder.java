@@ -1,7 +1,8 @@
 package org.example;
 
 public class Ladder implements Square {
-    int number;
+    private final int number;
+    private static final String ladderPrefix = "L-";
 
     public Ladder(int number) {
         this.number = number;
@@ -14,6 +15,10 @@ public class Ladder implements Square {
 
     @Override
     public String getName() {
-        return "L-"+ getNumber();
+        return ladderPrefix + getNumber();
+    }
+
+    public static int getPrefixLength() {
+        return ladderPrefix.length();
     }
 }

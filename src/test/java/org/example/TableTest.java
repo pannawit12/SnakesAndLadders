@@ -26,17 +26,18 @@ class TableTest {
 //        }
 //    }
 
-    @Test
-    public void moveTest() {
-        Table t = new Table(10, 6);
-//        t.printTable(6);
-        Player p = new Player("p1");
-        System.out.println(p.getLocation());
-        while (p.getLocation()!=100) {
-            p.rollDice(6);
-            System.out.println(p.getLocation());
-        }
-    }
+//    @Test
+//    public void moveTest() {
+//        Table t = new Table(10);
+//        t.randomSnakesLadders(6);
+////        t.printTable(6);
+//        Player p = new Player("p1");
+//        System.out.println(p.getLocation());
+//        while (p.getLocation()!=100) {
+//            p.rollDice(new Dice(6));
+//            System.out.println(p.getLocation());
+//        }
+//    }
 
 //    @Test
 //    public void randomNumbersTest() {
