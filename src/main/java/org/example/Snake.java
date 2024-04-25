@@ -1,22 +1,22 @@
 package org.example;
 
 public class Snake implements Square {
-    //TODO: number=>tail
-    private final int number;
+    //Finish: number=>tail
+    private final int tail;
     private static final String snakePrefix = "S-";
 
-    public Snake(int number) {
-        this.number = number;
+    public Snake(int tail) {
+        this.tail = tail;
     }
 
     @Override
-    public int getNumber() {
-        return number;
+    public int getTail() {
+        return tail;
     }
 
     @Override
     public String getName() {
-        return snakePrefix + getNumber();
+        return snakePrefix + getTail();
     }
 
     public static int getPrefixLength() {

@@ -2,14 +2,14 @@ package org.example;
 
 import java.util.*;
 
-// TODO: enter before return
-// TODO: length * length is ?
+// Finish: enter before return
+// Finish: length * length is ?
+// Finish: change method name to verb
 interface TableInterface {
     int getFinishSquareIndex();
     StringBuilder getTableToString();
-    void randomSnakesLadders(int numberOfDiceFaces);
-    // TODO: change method name to verb
-    int moveCalculation(int previousLocation, int diceNumber);
+    int moveCalculate(int previousLocation, int diceNumber);
+    void randomSnakesAndLadders(int numberOfDiceFaces);
 }
 
 public class Table implements TableInterface {
@@ -32,12 +32,12 @@ public class Table implements TableInterface {
         return (squareIndex - 1) / length;
     }
 
-    private int getSquareIndex(int row, int column) {  //finish: change col to column
+    private int getSquareIndex(int row, int column) {
         return row * length + (row % 2 == 0 ? column : length - 1 - column) + 1;
     }
 
-    // TODO: isSpecialSquare => ?
-    private boolean isSpecialSquare(int squareIndex) {
+    // Finish: isSpecialSquare => ?
+    private boolean isSnakeOrLadderHead(int squareIndex) {
         return table[squareIndex - 1] != null;
     }
 
@@ -50,16 +50,21 @@ public class Table implements TableInterface {
         int squareIndexLength = maxSquareIndexLength + spacesAfterIndex;
         int maxPrefixLength = Math.max(Snake.getPrefixLength(), Ladder.getPrefixLength());
         int squareNameLength = maxPrefixLength + maxSquareIndexLength ;
+        int marginSquare = 2;
+        int squareLength = squareIndexLength + spacesAfterIndex + squareNameLength + marginSquare;
+        int tableLength = length * squareLength + 1;
+
+        tableString.append("-".repeat(tableLength));
 
         for (int row = length - 1; row >= 0; row--) {
-            tableString.append("| ");
+            tableString.append("\n| ");
 
-            // TODO: col=>column
-            for (int col = 0; col < length; col++) {
-                int squareIndex = getSquareIndex(row, col);  //finish: change SquareIndex to squareIndex
+            // Finish: col=>column
+            for (int column = 0; column < length; column++) {
+                int squareIndex = getSquareIndex(row, column);
                 String squareName = "";
 
-                if (isSpecialSquare(squareIndex)) {
+                if (isSnakeOrLadderHead(squareIndex)) {
                     squareName = table[squareIndex - 1].getName();
                 }
 
@@ -70,22 +75,23 @@ public class Table implements TableInterface {
                 tableString.append(formattedSquareName);
                 tableString.append(" | ");
             }
-
-            tableString.append("\n");
         }
 
-        int marginSquare = 2;
-        int squareLength = squareIndexLength + spacesAfterIndex + squareNameLength + marginSquare;
-        int tableLength = length * squareLength + 1;
-        tableString.append("-".repeat(tableLength));
+        tableString.append("\n").append("-".repeat(tableLength));
+
         return tableString;
     }
 
     @Override
-    public int moveCalculation(int previousLocation, int diceNumber) {
+    public int moveCalculate(int previousLocation, int diceNumber) {
         int location = previousLocation + diceNumber;
-        Collection<Integer> passedSquareIndexes = new HashSet<>();
+        location = handleBoundary(location);
+        location = handleSnakesAndLadders(location);
 
+        return location;
+    }
+
+    private int handleBoundary(int location) {
         while (location > finishSquareIndex || location < 1) {
             if (location > finishSquareIndex) {
                 location = (finishSquareIndex << 1) - location;
@@ -94,9 +100,14 @@ public class Table implements TableInterface {
             }
         }
 
-        while (isSpecialSquare(location) && !passedSquareIndexes.contains(location)) {
+        return location;
+    }
+
+    private int handleSnakesAndLadders(int location) {
+        Collection<Integer> passedSquareIndexes = new HashSet<>();
+        while (isSnakeOrLadderHead(location) && !passedSquareIndexes.contains(location)) {
             passedSquareIndexes.add(location);
-            location = table[location - 1].getNumber();
+            location = table[location - 1].getTail();
         }
 
         return location;
@@ -105,59 +116,73 @@ public class Table implements TableInterface {
     private final Random random = new Random();
 
     @Override
-    public void randomSnakesLadders(int numberOfDiceFaces) {
-        // TODO: numberOfSnakesLadders ควรเปลี่ยนให้บอกได้ว่าเป็นของทั้งหมด
-        int numberOfSnakesLadders = (finishSquareIndex + 9) / 10;  //finish: change tenPerCentOfSquaresRoundedUp to numberOfSnakesLadders
-        int[] heads = uniqueRandomHead(numberOfSnakesLadders);
-        // TODO: snakeCount=>?
-        int snakeCount;
+    public void randomSnakesAndLadders(int numberOfDiceFaces) {
+        // Finish: numberOfSnakesLadders ควรเปลี่ยนให้บอกได้ว่าเป็นของทั้งหมด
+        int totalNumberOfSnakesAndLadders = (finishSquareIndex + 9) / 10;
+        int[] heads = uniqueRandomHeads(totalNumberOfSnakesAndLadders);
+        // Finish: snakeCount=>?
+        boolean isGameWinnable;
 
         do {
-            for (int head : heads) {
-                int tail = random.nextInt(length * length) + 1;
-                int headRow = getRow(head);
-                int tailRow = getRow(tail);
-
-                while (headRow == tailRow) {
-                    tail = random.nextInt(length * length) + 1;
-                    tailRow = getRow(tail);
-                }
-
-                if (headRow > tailRow) {
-                    table[head - 1] = new Snake(tail);
-                } else {
-                    table[head - 1] = new Ladder(tail);
-                }
-            }
-
-            snakeCount = 0;
-
-            for (int i = 2; i < length * length && snakeCount != numberOfDiceFaces; i++) {
-                if (moveCalculation(i, 0) < i) {
-                    snakeCount++;
-                } else {
-                    snakeCount = 0;
-                }
-            }
-        } while (snakeCount >= numberOfDiceFaces);
+            randomTails(heads);
+            isGameWinnable = isGameWinnable(numberOfDiceFaces);
+        } while (!isGameWinnable);
     }
 
-    private int[] uniqueRandomHead(int numberOfSnakesLadders) {
+    private int[] uniqueRandomHeads(int numberOfSnakesAndLadders) {
         int squareIndex;
-        int[] heads = new int[numberOfSnakesLadders];
+        int[] heads = new int[numberOfSnakesAndLadders];
 
-        for (squareIndex = 2; squareIndex < numberOfSnakesLadders + 2; squareIndex++) {
+        for (squareIndex = 2; squareIndex < numberOfSnakesAndLadders + 2; squareIndex++) {
             heads[squareIndex - 2] = squareIndex;
         }
 
         for (; squareIndex < finishSquareIndex ; squareIndex++) {
             int randomHeadIndex = random.nextInt(squareIndex - 2);
 
-            if (randomHeadIndex < numberOfSnakesLadders) {
+            if (randomHeadIndex < numberOfSnakesAndLadders) {
                 heads[randomHeadIndex] = squareIndex;
             }
         }
 
         return heads;
+    }
+
+    private void randomTails(int[] heads) {
+        for (int head : heads) {
+            int tail = random.nextInt(finishSquareIndex) + 1;
+            int headRow = getRow(head);
+            int tailRow = getRow(tail);
+
+            while (headRow == tailRow) {
+                tail = random.nextInt(finishSquareIndex) + 1;
+                tailRow = getRow(tail);
+            }
+
+            if (headRow > tailRow) {
+                table[head - 1] = new Snake(tail);
+            } else {
+                table[head - 1] = new Ladder(tail);
+            }
+        }
+    }
+
+    private boolean isGameWinnable(int numberOfDiceFaces) {
+        int adjacentSnakesCount = 0;
+
+        for (int squareIndex = 2; squareIndex < finishSquareIndex; squareIndex++) {
+            if (moveCalculate(squareIndex, 0) < squareIndex) {
+                adjacentSnakesCount++;
+                boolean isUnPassable = adjacentSnakesCount >= numberOfDiceFaces;
+
+                if (isUnPassable) {
+                    return false;
+                }
+            } else {
+                adjacentSnakesCount = 0;
+            }
+        }
+
+        return true;
     }
 }

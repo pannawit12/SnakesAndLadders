@@ -11,6 +11,7 @@ public class Dice {
 
     public int roll() {
         Random random = new Random();
+
         return random.nextInt(numberOfDiceFaces) + 1;
     }
 }

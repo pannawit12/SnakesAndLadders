@@ -1,6 +1,6 @@
 package org.example;
 
 public interface Square {
-    int getNumber();
+    int getTail();
     String getName();
 }

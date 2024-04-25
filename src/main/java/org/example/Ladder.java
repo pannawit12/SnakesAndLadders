@@ -1,22 +1,22 @@
 package org.example;
 
 public class Ladder implements Square {
-    //TODO: number=>tail
-    private final int number;
+    //Finish: number=>tail
+    private final int tail;
     private static final String ladderPrefix = "L-";
 
-    public Ladder(int number) {
-        this.number = number;
+    public Ladder(int tail) {
+        this.tail = tail;
     }
 
     @Override
-    public int getNumber() {
-        return number;
+    public int getTail() {
+        return tail;
     }
 
     @Override
     public String getName() {
-        return ladderPrefix + getNumber();
+        return ladderPrefix + getTail();
     }
 
     public static int getPrefixLength() {

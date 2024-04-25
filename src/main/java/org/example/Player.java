@@ -4,7 +4,7 @@ public class Player {
     private final String name;
     private int location = 1;
 
-    public Player(String name) { //finish: delete space bar before (
+    public Player(String name) {
         this.name = name;
     }
 

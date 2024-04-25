@@ -15,7 +15,7 @@ public class GameState {
 
     public static void main(String[] args) throws IOException {
         GameState game = new GameState();
-        game.gameRun();
+        game.run();
     }
 
     public GameState() throws IOException {
@@ -28,20 +28,20 @@ public class GameState {
         numberOfPlayers = Integer.parseInt(reader.readLine());
 
         System.out.print("Enter number of dice faces : ");
-        int numberOfDiceFaces = Integer.parseInt(reader.readLine()); //finish: change diceFaces to numberOfDiceFaces
+        int numberOfDiceFaces = Integer.parseInt(reader.readLine());
 
-        table = new Table(length); //finish: separate randomSnakesLadders from Table constructor
-        table.randomSnakesLadders(numberOfDiceFaces);
+        table = new Table(length);
+        table.randomSnakesAndLadders(numberOfDiceFaces);
         players = new Player[numberOfPlayers];
         dice = new Dice(numberOfDiceFaces);
 
-        for (int playerIndex = 0; playerIndex < numberOfPlayers; playerIndex++) { //finish: add space bar before <
+        for (int playerIndex = 0; playerIndex < numberOfPlayers; playerIndex++) {
             players[playerIndex] = new Player("Player" + (playerIndex + 1));
         }
     }
 
-    // TODO: gameRun => run
-    private void gameRun() throws IOException {
+    // Finish: gameRun => run
+    private void run() throws IOException {
         System.out.println("Running game...");
 
         int turnCount = 0;
@@ -50,15 +50,15 @@ public class GameState {
 
         while (!isGameEnd) {
             currentPlayer = players[turnCount++ % numberOfPlayers];
-            turn(currentPlayer);
+            executeTurn(currentPlayer);
             isGameEnd = isPlayerWin(currentPlayer);
         }
 
         System.out.println(currentPlayer.getName() + " Win!!!");
     }
 
-    // TODO: turn=>?
-    private void turn(Player currentPlayer) throws IOException {
+    // Finish: turn=>?
+    private void executeTurn(Player currentPlayer) throws IOException {
         System.out.println(table.getTableToString());
 
         for (Player player:players) {
@@ -66,14 +66,14 @@ public class GameState {
         }
 
         String name = currentPlayer.getName();
-        int diceNumber = currentPlayer.rollDice(dice); //finish: change dice to diceNumber
-        int moveLocation = table.moveCalculation(currentPlayer.getLocation(), diceNumber);
+        int diceNumber = currentPlayer.rollDice(dice);
+        int moveLocation = table.moveCalculate(currentPlayer.getLocation(), diceNumber);
         currentPlayer.setLocation(moveLocation);
 
         System.out.println("\n" + name + "'s turn");
         System.out.print("press Enter to roll a dice");
 
-        reader.readLine(); //finished: move skip to test file
+        reader.readLine();
 
         System.out.println(name + " rolled a " + diceNumber);
         System.out.println(name + " moved to square " + moveLocation);
