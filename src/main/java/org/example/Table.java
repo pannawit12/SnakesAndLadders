@@ -5,6 +5,7 @@ import java.util.*;
 // Finish: enter before return
 // Finish: length * length => finishSquareIndex
 // Finish: change method name to verb
+// Finish: edit line exceed 80 characters
 interface TableInterface {
     int getFinishSquareIndex();
     StringBuilder getTableToString();
@@ -33,7 +34,8 @@ public class Table implements TableInterface {
     }
 
     private int getSquareIndex(int row, int column) {
-        return row * length + (row % 2 == 0 ? column : length - 1 - column) + 1;
+        return row * length +
+                (row % 2 == 0 ? column : length - 1 - column) + 1;
     }
 
     // Finish: isSpecialSquare => ?
@@ -48,10 +50,12 @@ public class Table implements TableInterface {
         int maxSquareIndexLength = (int)Math.log10(finishSquareIndex) + 1;
         int spacesAfterIndex = 1;
         int squareIndexLength = maxSquareIndexLength + spacesAfterIndex;
-        int maxPrefixLength = Math.max(Snake.getPrefixLength(), Ladder.getPrefixLength());
+        int maxPrefixLength = Math.max(Snake.getPrefixLength(),
+                Ladder.getPrefixLength());
         int squareNameLength = maxPrefixLength + maxSquareIndexLength;
         int marginSquare = 2;
-        int squareLength = squareIndexLength + spacesAfterIndex + squareNameLength + marginSquare;
+        int squareLength = squareIndexLength + spacesAfterIndex +
+                squareNameLength + marginSquare;
         int tableLength = length * squareLength + 1;
 
         tableString.append("-".repeat(tableLength));
@@ -68,8 +72,14 @@ public class Table implements TableInterface {
                     squareName = table[squareIndex - 1].getName();
                 }
 
-                String formattedSquareIndex = String.format("%" + (- squareIndexLength) + "d", squareIndex);
-                String formattedSquareName = String.format("%" + squareNameLength + "s", squareName);
+                String formattedSquareIndex = String.format(
+                        "%" + (-squareIndexLength) + "d",
+                        squareIndex
+                );
+                String formattedSquareName = String.format(
+                        "%" + squareNameLength + "s",
+                        squareName
+                );
 
                 tableString.append(formattedSquareIndex);
                 tableString.append(formattedSquareName);
@@ -105,7 +115,8 @@ public class Table implements TableInterface {
 
     private int handleSnakesAndLadders(int location) {
         Collection<Integer> passedSquareIndexes = new HashSet<>();
-        while (isSnakeOrLadderHead(location) && !passedSquareIndexes.contains(location)) {
+        while (isSnakeOrLadderHead(location) &&
+                !passedSquareIndexes.contains(location)) {
             passedSquareIndexes.add(location);
             location = table[location - 1].getTail();
         }
@@ -133,11 +144,13 @@ public class Table implements TableInterface {
         int currentIndex = 0;
         int squareIndex = 2;
 
-        for (; currentIndex < totalNumberOfSnakesAndLadders; currentIndex++, squareIndex++) {
+        for (; currentIndex < totalNumberOfSnakesAndLadders;
+             currentIndex++, squareIndex++) {
             heads[currentIndex] = squareIndex;
         }
 
-        for (; squareIndex < finishSquareIndex; currentIndex++, squareIndex++) {
+        for (; squareIndex < finishSquareIndex;
+             currentIndex++, squareIndex++) {
             int randomHeadIndex = random.nextInt(currentIndex);
 
             if (randomHeadIndex < totalNumberOfSnakesAndLadders) {
