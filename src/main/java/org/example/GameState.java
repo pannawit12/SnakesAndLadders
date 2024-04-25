@@ -66,14 +66,14 @@ public class GameState {
         }
 
         String name = currentPlayer.getName();
-        int diceNumber = currentPlayer.rollDice(dice);
-        int moveLocation = table.moveCalculate(currentPlayer.getLocation(), diceNumber);
-        currentPlayer.setLocation(moveLocation);
 
         System.out.println("\n" + name + "'s turn");
         System.out.print("press Enter to roll a dice");
-
         reader.readLine();
+
+        int diceNumber = currentPlayer.rollDice(dice);
+        int moveLocation = table.moveCalculate(currentPlayer.getLocation(), diceNumber);
+        currentPlayer.setLocation(moveLocation);
 
         System.out.println(name + " rolled a " + diceNumber);
         System.out.println(name + " moved to square " + moveLocation);

@@ -3,7 +3,7 @@ package org.example;
 import java.util.*;
 
 // Finish: enter before return
-// Finish: length * length is ?
+// Finish: length * length => finishSquareIndex
 // Finish: change method name to verb
 interface TableInterface {
     int getFinishSquareIndex();
@@ -49,7 +49,7 @@ public class Table implements TableInterface {
         int spacesAfterIndex = 1;
         int squareIndexLength = maxSquareIndexLength + spacesAfterIndex;
         int maxPrefixLength = Math.max(Snake.getPrefixLength(), Ladder.getPrefixLength());
-        int squareNameLength = maxPrefixLength + maxSquareIndexLength ;
+        int squareNameLength = maxPrefixLength + maxSquareIndexLength;
         int marginSquare = 2;
         int squareLength = squareIndexLength + spacesAfterIndex + squareNameLength + marginSquare;
         int tableLength = length * squareLength + 1;
@@ -120,7 +120,6 @@ public class Table implements TableInterface {
         // Finish: numberOfSnakesLadders ควรเปลี่ยนให้บอกได้ว่าเป็นของทั้งหมด
         int totalNumberOfSnakesAndLadders = (finishSquareIndex + 9) / 10;
         int[] heads = uniqueRandomHeads(totalNumberOfSnakesAndLadders);
-        // Finish: snakeCount=>?
         boolean isGameWinnable;
 
         do {
@@ -129,18 +128,19 @@ public class Table implements TableInterface {
         } while (!isGameWinnable);
     }
 
-    private int[] uniqueRandomHeads(int numberOfSnakesAndLadders) {
-        int squareIndex;
-        int[] heads = new int[numberOfSnakesAndLadders];
+    private int[] uniqueRandomHeads(int totalNumberOfSnakesAndLadders) {
+        int[] heads = new int[totalNumberOfSnakesAndLadders];
+        int currentIndex = 0;
+        int squareIndex = 2;
 
-        for (squareIndex = 2; squareIndex < numberOfSnakesAndLadders + 2; squareIndex++) {
-            heads[squareIndex - 2] = squareIndex;
+        for (; currentIndex < totalNumberOfSnakesAndLadders; currentIndex++, squareIndex++) {
+            heads[currentIndex] = squareIndex;
         }
 
-        for (; squareIndex < finishSquareIndex ; squareIndex++) {
-            int randomHeadIndex = random.nextInt(squareIndex - 2);
+        for (; squareIndex < finishSquareIndex; currentIndex++, squareIndex++) {
+            int randomHeadIndex = random.nextInt(currentIndex);
 
-            if (randomHeadIndex < numberOfSnakesAndLadders) {
+            if (randomHeadIndex < totalNumberOfSnakesAndLadders) {
                 heads[randomHeadIndex] = squareIndex;
             }
         }
@@ -168,6 +168,7 @@ public class Table implements TableInterface {
     }
 
     private boolean isGameWinnable(int numberOfDiceFaces) {
+        // Finish: snakeCount=>?
         int adjacentSnakesCount = 0;
 
         for (int squareIndex = 2; squareIndex < finishSquareIndex; squareIndex++) {
